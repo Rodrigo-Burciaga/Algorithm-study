@@ -1,0 +1,67 @@
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+	int n, s; cin >> n >> s;
+	unordered_map<int, int> sell;	
+	unordered_map<int, int> buy;
+	for(int i=0; i<n;i++){
+		char d;
+		int p, q;
+		cin >> d >> p >> q;
+		if(d == 'S')
+			sell[p] = sell[p] + q;
+		else
+			buy[p] = buy[p] + q;
+	}
+	
+	priority_queue<pair<int, int>> sell_p;
+	priority_queue<pair<int, int>> buy_p;
+	
+	for(const auto& kv: sell){
+		sell_p.push({kv.first, kv.second});
+	}
+
+	for(const auto& kv: buy){
+		buy_p.push({kv.first, kv.second});
+	}
+	
+	
+	
+
+	int printed = 0;
+	
+	if((int) sell_p.size() <= s)
+		while(!sell_p.empty()){
+			pair<int, int> temp = sell_p.top();
+			sell_p.pop();
+			cout << "S " << temp.first << " " << temp.second << endl;
+		}
+	else {
+		while((int) sell_p.size() > s) sell_p.pop();
+		while(!sell_p.empty()){
+			pair<int, int> temp = sell_p.top();
+			sell_p.pop();
+			cout << "S " << temp.first << " " << temp.second << endl;
+		}
+			
+	}
+	
+	printed = 0;
+	while(!buy_p.empty()){
+		pair<int, int> temp = buy_p.top();
+		buy_p.pop();
+		if(printed >= s)
+			break;
+		cout << "B " << temp.first << " " << temp.second << endl;	
+		printed++;
+		
+
+	}
+	
+	
+
+	return 0;
+}
