@@ -12,12 +12,10 @@ int lcs(string &a, string &b, int n, int m, int *memo){
 	if(memo[n*b.size()+m] != -1) return memo[n*b.size()+m];
 	
 	if(a[n] == b[m]){
-	    memo[n*b.size()+m] = 1 + lcs(a, b, n+1, m+1, memo);
-		return memo[n*b.size()+m];
+	    return memo[n*b.size()+m] = 1 + lcs(a, b, n+1, m+1, memo);
 	}
 	
-	memo[n*b.size()+m] = max(lcs(a, b, n+1, m, memo), lcs(a, b, n, m+1, memo));
-			return memo[n*b.size()+m];
+	return memo[n*b.size()+m] = max(lcs(a, b, n+1, m, memo), lcs(a, b, n, m+1, memo));
 
 }
 
