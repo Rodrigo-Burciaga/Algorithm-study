@@ -35,7 +35,7 @@ struct DSU{
 	}
 	
 	bool sameSet(int a, int b){
-		return parent[a] == parent[b];
+		return find(a) == find(b);
 	}
 	
 };
