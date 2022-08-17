@@ -18,79 +18,73 @@ const char nl = '\n';
 const ll INF = 1e18;
 
 
-#ifdef LOCAL
-#include "debugger.h"
-#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
-#else
-#define debug(...) 42
-#endif
-
-
-
 using namespace std;
 
-
-bool hasCycle(int me, int parent, vector<bool> &visited, vector<vector<int>> &graph){
-	if(visited[me])
-		return true;
+struct DSU{
 	
-	visited[me] = true;
-	bool ans = false;
+	vector<int> parent;
+	vector<int> sz;
 	
-	for(int i = 0; i < len(graph[0]); ++i){
-		if(graph[me][i] == 1 and i != parent){
-			ans |= hasCycle(i, me, visited, graph);
-		}
-			
+	DSU(int n): parent(n), sz(n,1) {
+		for(int i = 0; i<n; ++i)
+			parent[i] = i;
 	}
 	
-	return ans;
-
-}
-
+	int find(int u){
+		return parent[u] = (parent[u] == u ? u : find(parent[u]));
+	}
+	
+	void union_find(int u, int v) {
+		int pu = find(u);
+		int pv = find(v);
+		if(pu != pv) {
+			if(sz[pu] < sz[pv])
+			swap(pu, pv);
+			sz[pu] += sz[pv];
+			parent[pv] = pu;	
+		}
+	}
+	
+	void print(){
+		for(int i = 0; i< (int)parent.size(); i++){
+			cout << "parent[" << i << "]= " << parent[i] << endl; 
+		}
+	}
+	
+	bool are_connected(int u, int v){
+		return find(u) == find(v);
+	}
+	
+};
 
 void solve() {
 	int n, m1, m2; cin >> n >> m1 >> m2;
-	vector<vector<int>> mocha(n, vector<int>(n, -1));
-	vector<vector<int>> diana(n, vector<int>(n, -1));
+	DSU mocha(n); DSU diana(n);
 	forn(i, m1){
-		int a, b; cin >> a >>b;
-		a-=1; b-=1;
-		mocha[a][b] = 1;
-		mocha[b][a] = 1;
-	}	
+		int u, v; cin >> u >> v;
+		u--; v--;
+		mocha.union_find(u, v);
+	}
+	
 	forn(i, m2){
-		int a, b; cin >> a >>b;
-		a-=1; b-=1;
-		diana[a][b] = 1;
-		diana[b][a] = 1;
+		int u, v; cin >> u >> v;
+		u--; v--;
+		diana.union_find(u, v);
 	}
 	
 	vector<pair<int,int>> ans;
-	forn(i, n)
-		forn(j, n){
-			if(j != i and mocha[i][j] == -1 and diana[i][j] == -1){
-				vector<bool> visitedm(n);
-				vector<bool> visitedd(n);
-
-				mocha[i][j] = 1; mocha[j][i] = 1;
-				diana[i][j] = 1; diana[j][i] = 1;
-				if (hasCycle(i,-1, visitedm, mocha) or 
-				    hasCycle(i, -1, visitedd, diana) ){
-					mocha[i][j] = INT_MAX; mocha[j][i] = INT_MAX;
-					diana[i][j] = INT_MAX; diana[j][i] = INT_MAX;
-				} else {
-					ans.push_back({i,j});
-				}
+	for(int i = 0; i<n; ++i)
+		for(int j = i+1; j<n; ++j){
+			if(!mocha.are_connected(i,j) and !diana.are_connected(i, j)){
+				mocha.union_find(i,j); diana.union_find(i, j);
+				ans.pb({i+1, j+1});
 			}
-		}						
+		}
 	
+	cout << len(ans) << endl;
+	for(auto p: ans)
+		cout << p.first << " " << p.second << endl;
 	
-	cout << ans.size() << endl;
-	for(auto c: ans)
-		cout << c.first+1 << " " << c.second+1 << endl;
-	
-
 }
 
 int main() {
@@ -98,7 +92,6 @@ int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	
 		solve();
 
 	return 0;
