@@ -12,6 +12,8 @@
 #define forn(i,n) for(int i = 0; i < int(n); ++i)
 #define forr(i,a,b) for(int i = a; i <= b; ++i)
 #define ll long long
+#define __  ios::sync_with_stdio(0), cin.tie(0);
+
 
 const int MOD = 1e9 + 7;
 const char nl = '\n';
@@ -31,9 +33,7 @@ void solve() {
 
 int main() {
 
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-
+	__
 	int T; cin >> T;
 	while(T--)
 		solve();
